@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Home Page</title>
+</head>
+<body>
+<h1>Welcome, <span th:text="${user.username}"></span>!</h1>
+<p>Email: <span th:text="${user.email}"></span></p>
+<p>Roles: <span th:text="${user.roles}"></span></p>
+<p>Country: <span th:text="${user.country}"></span></p>
+<a th:href="@{/logout}">Сменить пользователя</a>
+</body>
+</html>
