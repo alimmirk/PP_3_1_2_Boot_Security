@@ -10,18 +10,18 @@ import ru.kata.spring.boot_seccurity.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_seccurity.demo.repositories.UserRepository;
 
 import java.util.Set;
+
 @Configuration
 public class DataInitializer {
 
-
     @Bean
-    public ApplicationRunner initData(UserRepository userRepository
+    public ApplicationRunner initializeDefaultUsers(UserRepository userRepository
             , RoleRepository roleRepository
             , PasswordEncoder passwordEncoder) {
-        return args -> initializeData(userRepository, roleRepository, passwordEncoder);
+        return args -> setupInitialUserData(userRepository, roleRepository, passwordEncoder);
     }
 
-    private void initializeData(UserRepository userRepository
+    private void setupInitialUserData(UserRepository userRepository
             , RoleRepository roleRepository
             , PasswordEncoder passwordEncoder) {
 

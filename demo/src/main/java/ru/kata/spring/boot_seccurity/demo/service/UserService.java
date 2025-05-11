@@ -8,7 +8,7 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    User findByUsername(String name);
+    User findByUserName(String name);
 
     List<User> getAllUsers();
 
@@ -16,5 +16,5 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void updateUser(Long id, User user,List<Long> roleIds);
+    void updateUser(Long id, User user, List<Long> roleIds);
 }

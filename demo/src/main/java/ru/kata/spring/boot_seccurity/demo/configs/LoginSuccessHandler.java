@@ -13,7 +13,6 @@ import java.util.Collection;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request
             , HttpServletResponse response
@@ -25,15 +24,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 response.sendRedirect("/admin");
                 return;
             }
-        }
-
-        for (GrantedAuthority authority : authorities) {
             if (authority.getAuthority().equals("ROLE_USER")) {
                 response.sendRedirect("/user");
                 return;
             }
         }
-
         response.sendRedirect("/");
     }
 }

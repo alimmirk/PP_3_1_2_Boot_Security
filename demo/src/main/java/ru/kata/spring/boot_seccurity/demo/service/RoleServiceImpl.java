@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class RoleServiceImpl implements RoleService {
 
     private RoleRepository roleRepository;
@@ -19,7 +20,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
-    @Transactional
+
     @Override
     public Optional<Role> findByName(String roleName) {
         return roleRepository.findByName(roleName);
@@ -27,21 +28,17 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     @Override
-    public Role save(Role role) {
+    public Role saveRole(Role role) {
         return roleRepository.save(role);
     }
 
-    @Transactional
     @Override
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
 
-    @Transactional
     @Override
-    public List<Role> findRolesByIds(List<Long> roleIds) {
+    public List<Role> findRolesById(List<Long> roleIds) {
         return roleRepository.findAllById(roleIds);
     }
-
-
 }
