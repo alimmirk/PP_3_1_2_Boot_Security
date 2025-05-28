@@ -39,14 +39,6 @@ public class AdminController {
         return "new";
     }
 
-//    @PostMapping("/admin/new")
-//    public String addUser(@ModelAttribute("user") @Valid User user,
-//                          BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) return "new";
-//        userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-
     @PostMapping("/admin/new")
     public String addUser(@ModelAttribute("user") @Valid User user,
                           @RequestParam(value = "roles", required = false) List<Long> roleIds,
