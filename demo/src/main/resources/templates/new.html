@@ -24,6 +24,18 @@
     <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
     <br/>
 
+    <label>Выберите роль:</label>
+    <div>
+        <input type="checkbox" id="roleUser" name="roles" value="1">
+        <label for="roleUser">Пользователь</label>
+    </div>
+    <div>
+        <input type="checkbox" id="roleAdmin" name="roles" value="2">
+        <label for="roleAdmin">Администратор</label>
+    </div>
+    <p class="error" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></p>
+    <br/>
+
     <label for="password">Пароль:</label>
     <input type="password" id="password" th:field="*{password}"  />
     <p class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
@@ -31,7 +43,6 @@
 
     <button type="submit">Сохранить</button>
 </form>
-<p>При создании пользователя роль User присваивается автоматически!</p>
 <a th:href="@{/logout}">Сменить пользователя</a>
 </body>
 </html>

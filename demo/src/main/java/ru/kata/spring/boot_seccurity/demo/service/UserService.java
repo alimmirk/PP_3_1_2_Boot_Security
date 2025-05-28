@@ -12,7 +12,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    void saveUser(User user);
+    void saveUser(User user, List<Long> roleIds);
 
     void deleteUser(Long id);
 

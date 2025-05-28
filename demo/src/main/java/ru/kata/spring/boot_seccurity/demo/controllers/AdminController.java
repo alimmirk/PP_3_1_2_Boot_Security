@@ -35,14 +35,31 @@ public class AdminController {
     @GetMapping("/admin/new")
     public String createUserForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("roles", roleService.getAllRoles());
         return "new";
     }
 
+//    @PostMapping("/admin/new")
+//    public String addUser(@ModelAttribute("user") @Valid User user,
+//                          BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) return "new";
+//        userService.saveUser(user);
+//        return "redirect:/admin";
+//    }
+
     @PostMapping("/admin/new")
     public String addUser(@ModelAttribute("user") @Valid User user,
-                          BindingResult bindingResult) {
+                          @RequestParam(value = "roles", required = false) List<Long> roleIds,
+                          BindingResult bindingResult,
+                          RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "new";
-        userService.saveUser(user);
+        try {
+            userService.saveUser(user, roleIds); // Передаем roleIds в сервис
+            redirectAttributes.addFlashAttribute("message", "Пользователь успешно создан!");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
         return "redirect:/admin";
     }
 

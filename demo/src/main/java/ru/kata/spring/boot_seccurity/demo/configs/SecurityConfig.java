@@ -33,7 +33,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain configureSecurityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -42,8 +41,14 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .permitAll()
-                        .successHandler(loginSuccessHandler)
-
+                        .successHandler((request, response, authentication) -> {
+                            if (authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                                response.sendRedirect("/admin");
+                            } else {
+                                response.sendRedirect("/user");
+                            }
+                        })
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

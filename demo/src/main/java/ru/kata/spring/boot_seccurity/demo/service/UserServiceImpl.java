@@ -45,15 +45,32 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void saveUser(User user) {
-        Role userRole = roleService.findByName("ROLE_USER")
-                .orElseThrow(() -> new IllegalStateException("Role 'ROLE_USER' not found"));
-        user.getRoles().add(userRole);
+    public void saveUser(User user, List<Long> roleIds) {
+        findRoles(user, roleIds);
 
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            Role defaultRole = roleService.findByName("ROLE_USER")
+                    .orElseThrow(() -> new IllegalStateException("Default role ROLE_USER not found"));
+            user.setRoles(Set.of(defaultRole));
         }
+
+        Optional.ofNullable(user.getPassword())
+                .filter(pass -> !pass.trim().isEmpty())
+                .ifPresent(pass -> user.setPassword(passwordEncoder.encode(pass)));
+
+        userRepository.save(user);
+    }
+
+    private void findRoles(User user, List<Long> roleIds) {
+        Optional.ofNullable(roleIds)
+                .filter(ids -> !ids.isEmpty())
+                .ifPresent(ids -> {
+                    Set<Role> roles = new HashSet<>(roleService.findRolesById(ids));
+                    if (roles.isEmpty()) {
+                        throw new IllegalStateException("Указанные роли не найдены!");
+                    }
+                    user.setRoles(roles);
+                });
     }
 
     @Transactional
@@ -61,9 +78,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("User with id " + id + " not found"));
-        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
-            throw new IllegalStateException("Нельзя удалить администратора!");
-        }
+
         userRepository.delete(user);
     }
 
@@ -82,12 +97,6 @@ public class UserServiceImpl implements UserService {
                 .filter(pass -> !passwordEncoder.matches(pass, existingUser.getPassword()))
                 .ifPresent(pass -> existingUser.setPassword(passwordEncoder.encode(pass)));
 
-        Optional.ofNullable(roleIds)
-                .filter(ids -> !ids.isEmpty())
-                .ifPresent(ids -> {
-                    Set<Role> roles = new HashSet<>(roleService.findRolesById(ids));
-                    if (roles.isEmpty()) throw new IllegalStateException("Указанные роли не найдены!");
-                    existingUser.setRoles(roles);
-                });
+        findRoles(existingUser, roleIds);
     }
 }
